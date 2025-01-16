@@ -34,7 +34,7 @@ final costField = TextEditingController();
     },),
     ElevatedButton(onPressed: () {
 
-      Navigator.pop(context, Bill(name: billDescription, cost: billCost));
+      Navigator.pop(context, Bill(name: billDescription, cost: billCost, selectedForDeletion: false));
     }, child: const Text("Save"),)
   ],),);
 }

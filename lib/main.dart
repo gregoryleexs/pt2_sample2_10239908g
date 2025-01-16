@@ -42,11 +42,22 @@ class MyAppState extends State<MyApp> {
         return ElevatedButton(onPressed: () {
           //calculate the total amount before clearing list!
           setState(() {
+            //ENHANCEMENT added delete only selected
+            //first BEFORE touching the list, add total amount to be paid
             for(Bill b in billList)
             {
-              totalAmt += b.cost;
+
+              if(b.selectedForDeletion)
+                {
+                  totalAmt += b.cost;
+                }
+
             }
-            billList.clear();
+            //then use removeWhere with a condition to remove paid bills.
+            billList.removeWhere((b) {
+              return b.selectedForDeletion == true;
+
+            });
           });
           final sb = SnackBar(content: Text("Paid total amount: " + totalAmt.toString()));
           ScaffoldMessenger.of(context).showSnackBar(sb);
@@ -58,7 +69,11 @@ class MyAppState extends State<MyApp> {
       }),
       Expanded(child: ListView.builder(scrollDirection: Axis.vertical, shrinkWrap: true, itemCount: billList.length, itemBuilder: (BuildContext context, int index) {
         //dd
-        return ListTile(title: Text(billList[index].name + ", " + billList[index].cost.toString()), trailing: Checkbox(value: false, onChanged: (bool? value) {}),);
+        return ListTile(title: Text(billList[index].name + ", " + billList[index].cost.toString()), trailing: Checkbox(value: billList[index].selectedForDeletion, onChanged: (bool? value) {
+          setState(() {
+            billList[index].selectedForDeletion = value ! ? true:false;
+          });
+        }),);
       },)),
     ],)));
   }
